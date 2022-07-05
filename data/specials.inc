@@ -534,3 +534,4 @@ gSpecials::
 	def_special CloseDeptStoreElevatorWindow
 	def_special TrySetBattleTowerLinkType
 	def_special GetTimeOfDay
+	def_special BufferUnitSystemText
