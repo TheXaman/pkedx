@@ -46,6 +46,14 @@
 #include "constants/trainers.h"
 #include "constants/trainer_hill.h"
 #include "constants/weather.h"
+#include "tx_randomizer_and_challenges.h"
+#include "pokedex.h" //tx_randomizer_and_challenges
+#include "constants/region_map_sections.h" //tx_randomizer_and_challenges
+
+#ifdef GBA_PRINTF //tx_randomizer_and_challenges
+    //#include "printf.h"
+    //#include "mgba.h"
+#endif
 
 enum {
     TRANSITION_TYPE_NORMAL,
@@ -107,6 +115,11 @@ EWRAM_DATA static u8 *sTrainerABattleScriptRetAddr = NULL;
 EWRAM_DATA static u8 *sTrainerBBattleScriptRetAddr = NULL;
 EWRAM_DATA static bool8 sShouldCheckTrainerBScript = FALSE;
 EWRAM_DATA static u8 sNoOfPossibleTrainerRetScripts = 0;
+
+//tx_difficulty_options
+EWRAM_DATA u8 NuzlockeIsCaptureBlocked = FALSE;
+EWRAM_DATA u8 NuzlockeIsSpeciesClauseActive = FALSE;
+EWRAM_DATA u8 OneTypeChallengeCaptureBlocked = FALSE;
 
 // The first transition is used if the enemy pokemon are lower level than our pokemon.
 // Otherwise, the second transition is used.
@@ -387,6 +400,7 @@ static void CreateBattleStartTask(u8 transition, u16 song)
 
 void BattleSetup_StartWildBattle(void)
 {
+    SetNuzlockeChecks(); //tx_randomizer_and_challenges
     if (GetSafariZoneFlag())
         DoSafariBattle();
     else
@@ -2115,4 +2129,57 @@ u16 CountBattledRematchTeams(u16 trainerId)
     }
 
     return i;
+}
+
+//tx_randomizer_and_challenges
+u8 NuzlockeIsCaptureBlockedBySpeciesClause(u16 species) // @Kurausukun
+{
+    u8 i;
+    if (!gSaveBlock1Ptr->tx_Nuzlocke_SpeciesClause)
+        return FALSE;
+    
+    //disable double catch
+    if (GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_GET_CAUGHT))
+        return 2; //player already has this exact pokemon
+
+    for (i = 0; i < EVOS_PER_LINE; i++)
+    {
+        if (GetSetPokedexFlag(SpeciesToNationalPokedexNum(gEvolutionLines[species][i]), FLAG_GET_CAUGHT))
+            return TRUE;
+    }
+    return FALSE;
+}
+
+void SetNuzlockeChecks(void)
+{
+    if (IsOneTypeChallengeActive())
+    {
+        u8 typeChallenge = gSaveBlock1Ptr->tx_Challenges_OneTypeChallenge;
+        OneTypeChallengeCaptureBlocked = (GetTypeBySpecies(GetMonData(&gEnemyParty[0], MON_DATA_SPECIES), 1) != typeChallenge && 
+            GetTypeBySpecies(GetMonData(&gEnemyParty[0], MON_DATA_SPECIES), 2) != typeChallenge);
+    }
+
+    if (IsNuzlockeActive())
+    {
+        NuzlockeIsSpeciesClauseActive = NuzlockeIsCaptureBlockedBySpeciesClause(GetMonData(&gEnemyParty[0], MON_DATA_SPECIES));
+
+        NuzlockeIsCaptureBlocked = NuzlockeFlagGet(NuzlockeGetCurrentRegionMapSectionId());
+
+        if (IsMonShiny(&gEnemyParty[0]) && gSaveBlock1Ptr->tx_Nuzlocke_ShinyClause)
+        {
+            NuzlockeIsCaptureBlocked = FALSE;
+            NuzlockeIsSpeciesClauseActive = FALSE;
+        }
+
+        #ifdef GBA_PRINTF
+        mgba_printf(MGBA_LOG_DEBUG, "NuzlockeIsCaptureBlocked=%d", NuzlockeIsCaptureBlocked);
+        mgba_printf(MGBA_LOG_DEBUG, "NuzlockeIsSpeciesClauseActive=%d", NuzlockeIsSpeciesClauseActive);
+        mgba_printf(MGBA_LOG_DEBUG, "OneTypeChallengeCaptureBlocked=%d", OneTypeChallengeCaptureBlocked);
+        #endif
+    }
+    else
+    {
+        NuzlockeIsCaptureBlocked = FALSE;
+        NuzlockeIsSpeciesClauseActive = FALSE;
+    }
 }

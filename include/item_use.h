@@ -38,4 +38,6 @@ void ItemUseOutOfBattle_ReduceIV(u8);
 void ItemUseOutOfBattle_IncreaseIV(u8);
 void ItemUseOutOfBattle_Mints(u8 taskId);
 
+void DisplayCannotUseItemMessage(u8 taskId, bool8 isUsingRegisteredKeyItemOnField, const u8 *str); //tx_difficultiy_challenges
+
 #endif // GUARD_ITEM_USE_H

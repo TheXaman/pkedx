@@ -1036,6 +1036,7 @@ extern const u8 gText_XNatureObtainedInTrade[];
 extern const u8 gText_EmptyString5[];
 extern const u8 gText_EggWillTakeALongTime[];
 extern const u8 gText_EggAboutToHatch[];
+extern const u8 gText_EggReadyToHatch_Nuzlocke[];
 extern const u8 gText_EggWillHatchSoon[];
 extern const u8 gText_EggWillTakeSomeTime[];
 extern const u8 gText_PeculiarEggNicePlace[];
@@ -2075,6 +2076,7 @@ extern const u8 gText_PutItemInBag[];
 extern const u8 gText_ItemIsNowHeld[];
 extern const u8 gText_ChangedToNewItem[];
 extern const u8 gText_MailCantBeStored[];
+extern const u8 gText_NuzlockeFainted[];
 extern const u8 gPCText_Cancel[];
 extern const u8 gPCText_Store[];
 extern const u8 gPCText_Withdraw[];
@@ -3090,5 +3092,12 @@ extern const u8 gText_Summary2[];
 extern const u8 gText_PkmnForSwap[];
 extern const u8 gText_SamePkmnInPartyAlready[];
 extern const u8 gText_Cancel3[];
+
+//tx_randomizer_and_challenges
+extern const u8 gText_NuzlockeCantThrowPokeBallRoute[];
+extern const u8 gText_NuzlockeCantThrowPokeBallSpeciesClause[];
+extern const u8 gText_NuzlockeCantThrowPokeBallAlreadyCaught[];
+extern const u8 gText_OneTypeChallengeCantThrowPokeBall[];
+extern const u8 gText_BattleRules_NoItems_Player[];
 
 #endif // GUARD_STRINGS_H

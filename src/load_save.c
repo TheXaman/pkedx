@@ -13,6 +13,7 @@
 #include "gba/flash_internal.h"
 #include "decoration_inventory.h"
 #include "agb_flash.h"
+#include "tx_randomizer_and_challenges.h"
 
 static void ApplyNewEncryptionKeyToAllEncryptedData(u32 encryptionKey);
 
@@ -201,6 +202,13 @@ void CopyPartyAndObjectsToSave(void)
 
 void CopyPartyAndObjectsFromSave(void)
 {
+    //tx_randomizer_and_challenges
+    if (gSaveBlock1Ptr->tx_Random_OneForOne)
+        RandomizeSpeciesListEWRAM(1);
+    if (gSaveBlock1Ptr->tx_Random_TypeEffectiveness)
+        RandomizeTypeEffectivenessListEWRAM(1);
+    PrintTXSaveData();
+
     LoadPlayerParty();
     LoadObjectEvents();
 }

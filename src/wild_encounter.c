@@ -21,6 +21,14 @@
 #include "constants/items.h"
 #include "constants/layouts.h"
 #include "constants/weather.h"
+#include "tx_randomizer_and_challenges.h"
+
+#ifdef GBA_PRINTF //tx_randomizer_and_challenges
+    //#include "printf.h"
+    //#include "mgba.h"
+    //#include "data.h"                 // for gSpeciesNames, which maps species number to species name.
+    //#include "../gflib/string_util.h" // for ConvertToAscii()
+#endif
 
 extern const u8 EventScript_RepelWoreOff[];
 
@@ -570,6 +578,14 @@ static void CreateWildMon(u16 species, u8 level)
     ZeroEnemyPartyMons();
     checkCuteCharm = TRUE;
 
+    if (gSaveBlock1Ptr->tx_Random_WildPokemon) //tx_randomizer_and_challenges
+    {
+        #ifdef GBA_PRINTF
+        mgba_printf(MGBA_LOG_DEBUG, "******** CreateWildMon ********");
+        #endif
+        species = GetSpeciesRandomSeeded(species, TX_RANDOM_T_WILD_POKEMON, 0);
+    }
+
     switch (gBaseStats[species].genderRatio)
     {
     case MON_MALE:
@@ -1103,7 +1119,7 @@ static bool8 TryGetRandomWildMonIndexByType(const struct WildPokemon *wildMon, u
 
     for (validMonCount = 0, i = 0; i < numMon; i++)
     {
-        if (gBaseStats[wildMon[i].species].type1 == type || gBaseStats[wildMon[i].species].type2 == type)
+        if (GetTypeBySpecies(wildMon[i].species, 1) == type || GetTypeBySpecies(wildMon[i].species, 2) == type)
             validIndexes[validMonCount++] = i;
     }
 

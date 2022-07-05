@@ -185,6 +185,7 @@
 #define MON_DATA_SPATK2            87
 #define MON_DATA_SPDEF2            88
 #define MON_DATA_NATURE            89
+#define MON_DATA_NUZLOCKE_RIBBON   90
 
 // Ribbon IDs used by TV and Pokénav
 #define CHAMPION_RIBBON       0
@@ -337,6 +338,7 @@
 #define EVO_ITEM_HOLD_NIGHT	 18 // Pokémon levels up holding the specified item during night
 #define EVO_MOVE			 19 // Pokémon levels up knowing the specified move
 
+#define EVOS_PER_LINE 6
 #define EVOS_PER_MON 9
 
 // Evolution 'modes,' for GetEvolutionTargetSpecies
