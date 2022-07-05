@@ -93,4 +93,6 @@ void ItemUseCB_ReduceIV(u8 taskId, TaskFunc task);
 void ItemUseCB_IncreaseIV(u8 taskId, TaskFunc task);
 void ItemUseCB_Mints(u8 taskId, TaskFunc task);
 
+bool8 CanLearnTutorMove(u16, u8);
+
 #endif // GUARD_PARTY_MENU_H
